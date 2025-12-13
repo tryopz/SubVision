@@ -1,17 +1,18 @@
 const { createWorker } = require('tesseract.js');
 
 export async function ocrExtractText(imageBuffer: Buffer): Promise<string> {
+    console.info("[OCR] Starting OCR extraction...");
     const worker = await createWorker('eng');
     try {
-        console.log("OCR processing...");
+        console.info("[OCR] OCR processing...");
         const { data: { text } } = await worker.recognize(imageBuffer);
-        console.log("Extracted text", text);
+        console.info("[OCR] Extracted text", text);
         return text;
     } catch (error) {
-        console.error("OCR extraction error", error);
+        console.error("[OCR] OCR extraction error", error);
         throw error;
     } finally {
         await worker.terminate();
-        console.log("Tesseract worker terminated.");
+        console.info("[OCR] Tesseract worker terminated.");
     }
 }

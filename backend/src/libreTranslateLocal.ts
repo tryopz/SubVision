@@ -8,7 +8,9 @@ export async function translateText(
   sourceLang: string = "auto",
   alternative: number = 2
 ): Promise<typeDetectResponse> {
+  console.info("[LibreTranslate Local] Translating text:", { text, targetLang, sourceLang, alternative });
   try {
+    console.info("[LibreTranslate Local] Sending translation request to LibreTranslate server");
     const response = await fetch(`${LIBRETRANSLATE_URL}/translate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -21,7 +23,9 @@ export async function translateText(
       }),
     });
 
-    return await response.json() as typeDetectResponse;
+    const data = await response.json() as typeDetectResponse;
+    console.info("[LibreTranslate Local] Translation response received:", data.translatedText);
+    return data;
   } catch (error) {
     console.error("[LibreTranslate Local] Error:", error);
     throw error;
