@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { ocrExtractText } from './ocr'
 import { processImage } from './processing'
+import { detectLanguage } from './langageDetector'
 
 const app = new Hono()
 
@@ -23,7 +24,7 @@ app.post('/upload', async (c) => {
     const extractedText = await ocrExtractText(processedImage);
 
     /* Language detection */
-
+    const langageDetected = await detectLanguage(extractedText);
 
     /* Translate text */
 
