@@ -8,6 +8,8 @@ export async function processImage(image: Buffer): Promise<Buffer> {
         throw new Error('Unsupported image format');
     }
 
+    console.log("Processing image with format:", metadata.format);
+
     return await sharp(image)
         .normalize()
         .grayscale()

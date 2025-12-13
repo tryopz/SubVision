@@ -1,5 +1,5 @@
-// src/languageDetector.ts
 import init, { LanguageDetectorBuilder } from './lingua-wasm/pkg/lingua';
+import { ISO_TO_LINGUA } from './types';
 
 let detector: any = null;
 
@@ -25,9 +25,19 @@ export async function detectLanguage(text: string): Promise<string | null> {
     }
 
     try {
-        return detector.computeLanguageConfidenceValues(text);
+
+        return getIsoCode(detector.detectLanguageOf(text));
     } catch (error) {
         console.error('[LanguageDetector] Detection arror :', error);
         return null;
     }
+}
+
+function getIsoCode(languageName: string): string {
+    const code = ISO_TO_LINGUA[languageName];
+    console.log('[LanguageDetector] Detected language:', languageName);
+    if (code) return code;
+
+    console.warn('[LanguageDetector] No ISO code found for language:', languageName);
+    return 'auto';
 }

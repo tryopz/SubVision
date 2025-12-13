@@ -1,17 +1,28 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+// prisma/schema.prisma
 generator client {
-  provider = "prisma-client"
-  output   = "../prisma/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
 }
 
-model Word {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model OriginalText {
+  id           Int           @id @default(autoincrement())
+  text         String
+  sourceLang   String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  translations Translation[]
+}
+
+model Translation {
+  id             Int          @id @default(autoincrement())
+  text           String
+  targetLang     String
+  confidence     Float?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  originalText   OriginalText @relation(fields: [originalTextId], references: [id])
+  originalTextId Int
 }
