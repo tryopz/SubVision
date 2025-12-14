@@ -2,14 +2,14 @@ import type { OriginalText, Translation } from "@prisma/client";
 
 export const sharpFormats: string[] = ['jpeg', 'png', 'webp', 'tiff', 'avif', 'gif', 'svg', 'tiff'];
 
-export interface inputUpload {
+export interface InputUpload {
     image: File;
     sourceLang: string;
     targetLang: string;
     alternative: number;
 }
 
-export interface outputUpload {
+export interface OutputUpload {
     originalText: OriginalText;
     translatedText: Translation;
     alternatives: Translation[];
@@ -98,9 +98,18 @@ export const ISO_TO_LINGUA: Record<string, string> = Object.fromEntries(
 );
 
 
-export interface typeDetectResponse {
+export interface LibreTranslateTranslateResponse {
     alternatives: string[];
     translatedText: string;
+}
+
+export interface LibreTranslateDetectResponse {
+    detections: DetectResponse[];
+}
+
+export interface DetectResponse {
+    confidence: number;
+    language: string;
 }
 
 export const LIBRE_TRANSLATE_LANGUAGES: Record<string, string> = {

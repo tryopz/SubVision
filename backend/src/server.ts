@@ -1,13 +1,12 @@
 import type { Translation } from '@prisma/client'
 import { Hono } from 'hono'
-import { translateText } from './libreTranslateLocal'
-import { detectLanguage } from './linguaDetector'
+import { detectLanguageWithLibreTranslate, translateTextWithLibreTranslate } from './libreTranslateLocal'
 import { ocrExtractText } from './ocr'
 import { processImage } from './processing'
 import { createOriginalText, getOriginalTextByText } from './services/original-text-service'
 import { createTranslation, getAlternativesTranslation, getTranslationByOriginalTextId } from './services/translation'
 import { runStartupTasks } from './startup'
-import type { inputUpload, outputUpload } from './types'
+import type { InputUpload, OutputUpload } from './types'
 
 export const app = new Hono()
 
@@ -17,7 +16,7 @@ app.post('/upload', async (c) => {
     console.info('Received upload request');
     const formData = await c.req.formData()
 
-    const input: inputUpload = {
+    const input: InputUpload = {
         image: formData.get("image") as File,
         sourceLang: formData.get("sourceLang") as string,
         targetLang: formData.get("targetLang") as string,
@@ -25,7 +24,7 @@ app.post('/upload', async (c) => {
     }
 
     let sourceLang: string = input.sourceLang;
-    let output: outputUpload;
+    let output: OutputUpload;
     let alternativesTranslation: Translation[] = [];
 
     const imageBuffer = Buffer.from(await input.image.arrayBuffer());
@@ -38,7 +37,12 @@ app.post('/upload', async (c) => {
 
     /* Language detection */
     if (input.sourceLang === '') {
-        sourceLang = await detectLanguage(extractedText) || '';
+        const detectLanguage = await detectLanguageWithLibreTranslate(extractedText);
+        if (!detectLanguage || typeof detectLanguage === 'string') {
+            throw new Error('Language detection failed');
+        } else {
+            sourceLang = detectLanguage.language;
+        }
     }
 
     /* Check if text is already translate */
@@ -56,7 +60,7 @@ app.post('/upload', async (c) => {
     }
 
     /* Translate text */
-    const translatedText = await translateText(extractedText, input.targetLang, sourceLang, input.alternative);
+    const translatedText = await translateTextWithLibreTranslate(extractedText, input.targetLang, sourceLang, input.alternative);
 
     /* Store original text in database */
     const originalTextStored = await createOriginalText(extractedText, sourceLang);
