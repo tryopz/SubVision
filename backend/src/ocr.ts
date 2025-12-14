@@ -6,7 +6,7 @@ export async function ocrExtractText(imageBuffer: Buffer): Promise<string> {
     try {
         console.info("[OCR] OCR processing...");
         const { data: { text } } = await worker.recognize(imageBuffer);
-        console.info("[OCR] Extracted text", text);
+        console.info("[OCR] Extracted text:", text);
         return text;
     } catch (error) {
         console.error("[OCR] OCR extraction error", error);

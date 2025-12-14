@@ -1,3 +1,5 @@
+import type { OriginalText, Translation } from "@prisma/client";
+
 export const sharpFormats: string[] = ['jpeg', 'png', 'webp', 'tiff', 'avif', 'gif', 'svg', 'tiff'];
 
 export interface inputUpload {
@@ -5,6 +7,12 @@ export interface inputUpload {
     sourceLang: string;
     targetLang: string;
     alternative: number;
+}
+
+export interface outputUpload {
+    originalText: OriginalText;
+    translatedText: Translation;
+    alternatives: Translation[];
 }
 
 export const LINGUA_LANGUAGES: Record<string, string> = {

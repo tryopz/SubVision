@@ -1,16 +1,20 @@
+import type { Translation } from '@prisma/client'
 import { Hono } from 'hono'
 import { translateText } from './libreTranslateLocal'
 import { detectLanguage } from './linguaDetector'
 import { ocrExtractText } from './ocr'
 import { processImage } from './processing'
+import { createOriginalText, getOriginalTextByText } from './services/original-text-service'
+import { createTranslation, getAlternativesTranslation, getTranslationByOriginalTextId } from './services/translation'
 import { runStartupTasks } from './startup'
-import type { inputUpload } from './types'
+import type { inputUpload, outputUpload } from './types'
 
 export const app = new Hono()
 
 app.get('/ping', (c) => c.text('pong'))
 
 app.post('/upload', async (c) => {
+    console.info('Received upload request');
     const formData = await c.req.formData()
 
     const input: inputUpload = {
@@ -21,6 +25,8 @@ app.post('/upload', async (c) => {
     }
 
     let sourceLang: string = input.sourceLang;
+    let output: outputUpload;
+    let alternativesTranslation: Translation[] = [];
 
     const imageBuffer = Buffer.from(await input.image.arrayBuffer());
 
@@ -35,20 +41,41 @@ app.post('/upload', async (c) => {
         sourceLang = await detectLanguage(extractedText) || '';
     }
 
+    /* Check if text is already translate */
+    const existingText = await getOriginalTextByText(extractedText, sourceLang);
+
+    /* If text exists, return existing translations */
+    if (existingText) {
+        console.info(`[Server] Text already exists in database with ID: ${existingText.id}`);
+        output = {
+            originalText: existingText,
+            translatedText: await getTranslationByOriginalTextId(existingText.id),
+            alternatives: await getAlternativesTranslation(existingText.id),
+        };
+        return c.json(output);
+    }
+
     /* Translate text */
     const translatedText = await translateText(extractedText, input.targetLang, sourceLang, input.alternative);
 
-    /* Store both in database */
+    /* Store original text in database */
+    const originalTextStored = await createOriginalText(extractedText, sourceLang);
 
+    /* Store original translation marked with alternative=false */
+    const translation = await createTranslation(translatedText.translatedText, false, input.targetLang, originalTextStored.id);
+    /* Store alternative translations marked with alternative=true */
+    for (let i = 0; i < input.alternative; i++) {
+        const alternative = await createTranslation(translatedText.translatedText, true, input.targetLang, originalTextStored.id);
+        alternativesTranslation.push(alternative);
+    }
 
     /* Return translated text */
-    return c.json({
-        translatedText: translatedText.translatedText,
-        alternatives: translatedText.alternatives,
-        sourceLang: sourceLang,
-        targetLang: input.targetLang,
-        originalText: extractedText
-    });
+    output = {
+        originalText: originalTextStored,
+        translatedText: translation,
+        alternatives: alternativesTranslation,
+    };
+    return c.json(output);
 })
 
 async function startServer() {

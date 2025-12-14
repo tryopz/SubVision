@@ -25,6 +25,9 @@ export async function translateText(
 
     const data = await response.json() as typeDetectResponse;
     console.info("[LibreTranslate Local] Translation response received:", data.translatedText);
+    data.alternatives.forEach((alt, index) => {
+      console.info(`[LibreTranslate Local] Alternative ${index + 1}:`, alt);
+    });
     return data;
   } catch (error) {
     console.error("[LibreTranslate Local] Error:", error);

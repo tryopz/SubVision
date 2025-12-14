@@ -1,6 +1,9 @@
-// prisma/schema.prisma
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,6 +23,7 @@ model Translation {
   id             Int          @id @default(autoincrement())
   text           String
   targetLang     String
+  alternative    Boolean      @default(false)
   confidence     Float?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
