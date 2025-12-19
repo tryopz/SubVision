@@ -1,5 +1,5 @@
-import type { Translation } from '@prisma/client'
 import { Hono } from 'hono'
+import type { Translation } from '../generated/prisma/client'
 import { detectLanguageWithLibreTranslate, translateTextWithLibreTranslate } from './libreTranslateLocal'
 import { ocrExtractText } from './ocr'
 import { processImage } from './processing'
@@ -10,11 +10,14 @@ import type { InputUpload, OutputUpload } from './types'
 
 export const app = new Hono()
 
-app.get('/ping', (c) => c.text('pong'))
+app.get('/ping', async (c) => {
+    console.info('Received ping request');
+    return c.text('pong');
+})
 
 app.post('/upload', async (c) => {
     console.info('Received upload request');
-    const formData = await c.req.formData()
+    const formData = await c.req.formData();
 
     const input: InputUpload = {
         image: formData.get("image") as File,
