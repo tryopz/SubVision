@@ -13,9 +13,12 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "frontend",
+        "label": "main",
+        "title": "SubVision",
+        "url": "/",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "visible": true
       }
     ],
     "security": {
@@ -31,6 +34,7 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": ["resources/subvision_default.json"]
   }
 }
