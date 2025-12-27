@@ -1,11 +1,14 @@
 import { listen } from "@tauri-apps/api/event";
-import { readData } from "./data-service";
+import { readData, resetToDefault } from "./data-service";
+import { initUi } from "./initUi";
 
 
 console.log("JS loaded");
 
+resetToDefault();
 const data = await readData()
-console.log(data);
+
+initUi(data);
 
 listen<string>("tray-event", (event) => {
   console.info("Tray event:", event.payload);

@@ -1,9 +1,12 @@
 {
     "source": "auto",
-    "target": "en",
+    "target": "fr",
     "shortcut": "",
     "language": [
-        "auto",
-        "en"
+        "fr",
+        "en",
+        "es",
+        "de",
+        "ja"
     ]
 }

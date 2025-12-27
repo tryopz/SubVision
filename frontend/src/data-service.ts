@@ -5,6 +5,8 @@ export interface JSONMODEL {
     source: string;
     target: string;
     shortcut: string;
+    languageSource: string[];
+    languageTarget: string[];
     language: string[];
 }
 
@@ -124,16 +126,16 @@ export async function resetToDefault(): Promise<void> {
     }
 }
 
-export async function addLanguage(lang: string): Promise<void> {
+export async function addLanguage(lang: string, array: "languageSource" | "languageTarget"): Promise<void> {
     try {
         const data = await readData();
 
         if (!data.language.includes(lang)) {
             data.language.push(lang);
-            await updateData('language', data.language);
-            console.info(`Language ${lang} added`);
+            await updateData(array, data.language);
+            console.info(`Language ${lang} added to ${array}`);
         } else {
-            console.info(`Language ${lang} already exists`);
+            console.info(`Language ${lang} already exists in ${array}`);
         }
     } catch (error) {
         console.error('Error adding language:', error);
@@ -141,16 +143,16 @@ export async function addLanguage(lang: string): Promise<void> {
     }
 }
 
-export async function removeLanguage(lang: string): Promise<void> {
+export async function removeLanguage(lang: string, array: "languageSource" | "languageTarget"): Promise<void> {
     try {
         const data = await readData();
         const filteredLanguages = data.language.filter(l => l !== lang);
 
         if (filteredLanguages.length !== data.language.length) {
-            await updateData('language', filteredLanguages);
-            console.info(`Language ${lang} removed`);
+            await updateData(array, filteredLanguages);
+            console.info(`Language ${lang} removed from ${array}`);
         } else {
-            console.info(`Language ${lang} not found`);
+            console.info(`Language ${lang} not found in ${array}`);
         }
     } catch (error) {
         console.error('Error removing language:', error);
