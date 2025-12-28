@@ -141,7 +141,7 @@ input::placeholder {
   font-weight: bolder;
 }
 
-#language-choice {
+.language-choice {
   margin-top: 0.5rem;
   padding: 8px;
   border: 2px solid;
@@ -152,19 +152,20 @@ input::placeholder {
   color: black;
 }
 
-#language-choice:hover {
+.language-choice:hover {
   color: var(--primary);
   background-color: black;
 }
 
-#language-choice:hover::placeholder,
-#language-choice:focus::placeholder {
+.language-choice:hover::placeholder,
+.language-choice:focus::placeholder {
   color: var(--primary);
 }
 
-#language-choice:focus {
+.language-choice:focus {
   outline: none;
   border-color: var(--primary);
+  /* font-weight: bolder; */
 }
 
 #auto-button {
