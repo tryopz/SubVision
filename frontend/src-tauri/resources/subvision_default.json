@@ -1,12 +1,8 @@
 {
-    "source": "auto",
-    "target": "fr",
-    "shortcut": "",
-    "language": [
-        "fr",
-        "en",
-        "es",
-        "de",
-        "ja"
-    ]
+  "source": "auto",
+  "target": "fr",
+  "shortcut": "",
+  "languageSource": ["fr", "en", "es"],
+  "languageTarget": ["de", "ja", "ru"],
+  "language": ["fr", "en", "es", "de", "ja", "ru"]
 }

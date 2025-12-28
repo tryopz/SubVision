@@ -1,5 +1,5 @@
-import { BaseDirectory, exists, readTextFile, writeTextFile, mkdir } from '@tauri-apps/plugin-fs';
 import { resolveResource } from '@tauri-apps/api/path';
+import { BaseDirectory, exists, mkdir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 
 export interface JSONMODEL {
     source: string;
