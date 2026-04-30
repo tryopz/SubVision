@@ -1,2 +1,3 @@
 *.db
 backend/eng.traineddata
+.DS_Store

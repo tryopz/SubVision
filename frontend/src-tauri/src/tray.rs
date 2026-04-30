@@ -10,10 +10,11 @@ pub fn setup_tray(app: &tauri::App) -> tauri::Result<()> {
         .expect("no default window icon set")
         .clone();
 
+    let screen = MenuItem::with_id(app, "screen", "Screen", true, None::<&str>)?;
     let settings = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
 
-    let menu = Menu::with_items(app, &[&settings, &quit])?;
+    let menu = Menu::with_items(app, &[&screen, &settings, &quit])?;
 
     let tray = TrayIconBuilder::new()
         .icon(icon)
@@ -21,6 +22,9 @@ pub fn setup_tray(app: &tauri::App) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .menu(&menu)
         .on_menu_event(|app, event| match event.id.as_ref() {
+            "screen" => {
+                let _ = app.emit("tray-event", "screen");
+            }
             "settings" => {
                 println!("settings button pressed");
                 if let Err(e) = app.emit("tray-event", "settings") {

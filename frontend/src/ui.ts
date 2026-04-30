@@ -10,13 +10,9 @@ function setupDataList(language: string[]): void {
     const dataListSource = document.getElementById("language-available-source");
     const dataListTarget = document.getElementById("language-available-target");
 
-    console.log("DataList Source:", dataListSource); // DEBUG
-    console.log("DataList Target:", dataListTarget);
-
     if (!dataListSource || !dataListTarget) return;
 
     language.forEach(lang => {
-        console.log(lang)
         const optionSource = document.createElement("option");
         optionSource.value = lang;
         dataListSource.appendChild(optionSource);
@@ -115,6 +111,7 @@ function handleAutoDetect(): void {
 async function onSourceLanguageChange(language: string): Promise<void> {
     console.info(`Source language changed to: ${language}`);
     await updateData("source", language)
+    
 }
 
 async function onTargetLanguageChange(language: string): Promise<void> {

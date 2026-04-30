@@ -20,6 +20,6 @@ listen<string>("tray-event", (event) => {
   console.info("Tray event:", event.payload);
 
   if (event.payload === 'settings') {
-    console.info('settings event received')
+
   }
 });
